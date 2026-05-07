@@ -1,13 +1,12 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// Generate JWT
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-// @route   POST /api/auth/register
-// @access  Public
+
 const registerMember = async (req, res) => {
   const { name, dateOfBirth, address, email, password } = req.body;
 
@@ -37,8 +36,6 @@ const registerMember = async (req, res) => {
   }
 };
 
-// @route   POST /api/auth/register-staff
-// @access  Admin only
 const registerStaff = async (req, res) => {
   const { name, dateOfBirth, address, email, password } = req.body;
 
@@ -69,8 +66,6 @@ const registerStaff = async (req, res) => {
   }
 };
 
-// @route   POST /api/auth/login
-// @access  Public
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -81,7 +76,6 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Block suspended staff
     if (user.role === 'staff' && user.isSuspended) {
       return res.status(403).json({ message: 'Your account has been suspended' });
     }
@@ -101,8 +95,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-// @route   GET /api/auth/me
-// @access  Private
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');

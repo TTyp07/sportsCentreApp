@@ -10,7 +10,7 @@ const equipmentReportSchema = new mongoose.Schema({
     enum: ['pending', 'noted', 'repair_in_progress', 'resolved'], 
     default: 'pending' 
   },
-  updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null } // staff who updated
+  updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null } 
 
 }, { timestamps: true });
 

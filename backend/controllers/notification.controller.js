@@ -1,7 +1,5 @@
 const Notification = require('../models/Notification');
 
-// @route   GET /api/notifications
-// @access  Private (all roles)
 const getMyNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ recipient: req.user._id })
@@ -14,8 +12,6 @@ const getMyNotifications = async (req, res) => {
   }
 };
 
-// @route   GET /api/notifications/unread
-// @access  Private (all roles)
 const getUnreadNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({
@@ -31,8 +27,6 @@ const getUnreadNotifications = async (req, res) => {
   }
 };
 
-// @route   PUT /api/notifications/:id/read
-// @access  Private (all roles)
 const markAsRead = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);
@@ -51,8 +45,6 @@ const markAsRead = async (req, res) => {
   }
 };
 
-// @route   PUT /api/notifications/read-all
-// @access  Private (all roles)
 const markAllAsRead = async (req, res) => {
   try {
     await Notification.updateMany(
@@ -66,8 +58,6 @@ const markAllAsRead = async (req, res) => {
   }
 };
 
-// @route   DELETE /api/notifications/:id
-// @access  Private (all roles)
 const deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(req.params.id);

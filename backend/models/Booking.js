@@ -13,7 +13,7 @@ const bookingSchema = new mongoose.Schema({
     default: 'pending'
   },
   alternativeFacility: { type: mongoose.Schema.Types.ObjectId, ref: 'Facility', default: null },
-  handledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null } // staff who handled it
+  handledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null } 
 
 }, { timestamps: true });
 

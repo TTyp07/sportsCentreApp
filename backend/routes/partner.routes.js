@@ -14,7 +14,6 @@ const {
 const { protect } = require('../middleware/auth.middleware');
 const { authorizeRoles, isMemberActive } = require('../middleware/role.middleware');
 
-// All member only
 router.get('/profile', protect, authorizeRoles('member'), getMyPartnerProfile);
 router.put('/profile', protect, authorizeRoles('member'), isMemberActive, updatePartnerProfile);
 router.get('/search', protect, authorizeRoles('member'), isMemberActive, searchPartners);

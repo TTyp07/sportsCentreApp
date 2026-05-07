@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 
 const facilitySchema = new mongoose.Schema({
   name: { type: String, required: true },
-  type: { type: String, required: true }, // e.g. badminton court, football pitch
+  type: { type: String, required: true }, 
   description: { type: String },
   usageGuidelines: { type: String },
   location: { type: String },
   capacityLimit: { type: Number, default: 1 },
-  timeSlotDuration: { type: Number, default: 60 }, // in minutes
+  timeSlotDuration: { type: Number, default: 60 }, 
   availableSlots: [
     {
-      day: { type: String }, // e.g. "Monday"
-      startTime: { type: String }, // e.g. "09:00"
-      endTime: { type: String }  // e.g. "10:00"
+      day: { type: String }, 
+      startTime: { type: String }, 
+      endTime: { type: String }  
     }
   ],
   assignedStaff: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

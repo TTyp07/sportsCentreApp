@@ -17,14 +17,12 @@ const {
 const { protect } = require('../middleware/auth.middleware');
 const { authorizeRoles, isMemberActive, isStaffApproved } = require('../middleware/role.middleware');
 
-// Member routes
 router.post('/', protect, authorizeRoles('member'), isMemberActive, createBookingRequest);
 router.get('/my', protect, authorizeRoles('member'), getMyBookings);
 router.get('/history', protect, authorizeRoles('member'), getMyBookingHistory);
 router.put('/cancel-membership', protect, authorizeRoles('member'), cancelMembership);
 router.put('/:id/cancel', protect, authorizeRoles('member'), cancelBooking);
 
-// Staff routes
 router.get('/requests', protect, authorizeRoles('staff'), isStaffApproved, getBookingRequests);
 router.get('/requests/all', protect, authorizeRoles('staff'), isStaffApproved, getAllBookingsForStaff);
 router.get('/:id', protect, authorizeRoles('staff', 'admin'), getBookingById);

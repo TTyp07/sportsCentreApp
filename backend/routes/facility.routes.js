@@ -15,12 +15,9 @@ const {
 const { protect } = require('../middleware/auth.middleware');
 const { authorizeRoles } = require('../middleware/role.middleware');
 
-// Public
 router.get('/', getFacilities);
 router.get('/:id', getFacilityById);
 router.get('/:id/availability', getFacilityAvailability);
-
-// Admin only
 router.post('/', protect, authorizeRoles('admin'), createFacility);
 router.put('/:id', protect, authorizeRoles('admin'), updateFacility);
 router.delete('/:id', protect, authorizeRoles('admin'), deleteFacility);

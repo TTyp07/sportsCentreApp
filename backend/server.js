@@ -10,7 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/facilities', require('./routes/facility.routes'));
 app.use('/api/bookings', require('./routes/booking.routes'));

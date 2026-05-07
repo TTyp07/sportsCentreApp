@@ -2,10 +2,7 @@ const User = require('../models/User');
 const Booking = require('../models/Booking');
 const EquipmentReport = require('../models/EquipmentReport');
 
-// ─── STAFF MANAGEMENT ─────────────────────────────────
 
-// @route   GET /api/admin/staff
-// @access  Admin only
 const getAllStaff = async (req, res) => {
   try {
     const staff = await User.find({ role: 'staff' })
@@ -19,8 +16,7 @@ const getAllStaff = async (req, res) => {
   }
 };
 
-// @route   GET /api/admin/staff/pending
-// @access  Admin only
+
 const getPendingStaff = async (req, res) => {
   try {
     const staff = await User.find({ role: 'staff', isApproved: false, isSuspended: false })
@@ -33,8 +29,6 @@ const getPendingStaff = async (req, res) => {
   }
 };
 
-// @route   GET /api/admin/staff/:id
-// @access  Admin only
 const getStaffById = async (req, res) => {
   try {
     const staff = await User.findOne({ _id: req.params.id, role: 'staff' })
@@ -48,8 +42,6 @@ const getStaffById = async (req, res) => {
   }
 };
 
-// @route   PUT /api/admin/staff/:id/approve
-// @access  Admin only
 const approveStaff = async (req, res) => {
   try {
     const staff = await User.findOne({ _id: req.params.id, role: 'staff' });
@@ -69,8 +61,6 @@ const approveStaff = async (req, res) => {
   }
 };
 
-// @route   PUT /api/admin/staff/:id/suspend
-// @access  Admin only
 const suspendStaff = async (req, res) => {
   try {
     const staff = await User.findOne({ _id: req.params.id, role: 'staff' });
@@ -89,8 +79,6 @@ const suspendStaff = async (req, res) => {
   }
 };
 
-// @route   PUT /api/admin/staff/:id/unsuspend
-// @access  Admin only
 const unsuspendStaff = async (req, res) => {
   try {
     const staff = await User.findOne({ _id: req.params.id, role: 'staff' });
@@ -109,10 +97,6 @@ const unsuspendStaff = async (req, res) => {
   }
 };
 
-// ─── MEMBER MANAGEMENT ────────────────────────────────
-
-// @route   GET /api/admin/members
-// @access  Admin only
 const getAllMembers = async (req, res) => {
   try {
     const members = await User.find({ role: 'member' })
@@ -125,8 +109,6 @@ const getAllMembers = async (req, res) => {
   }
 };
 
-// @route   GET /api/admin/members/:id
-// @access  Admin only
 const getMemberById = async (req, res) => {
   try {
     const member = await User.findOne({ _id: req.params.id, role: 'member' })
@@ -139,10 +121,7 @@ const getMemberById = async (req, res) => {
   }
 };
 
-// ─── DASHBOARD STATS ──────────────────────────────────
 
-// @route   GET /api/admin/dashboard
-// @access  Admin only
 const getDashboardStats = async (req, res) => {
   try {
     const totalMembers = await User.countDocuments({ role: 'member', membershipActive: true });

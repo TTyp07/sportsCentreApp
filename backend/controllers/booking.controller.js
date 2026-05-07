@@ -3,10 +3,7 @@ const BookingHistory = require('../models/BookingHistory');
 const Facility = require('../models/Facility');
 const Notification = require('../models/Notification');
 
-// ─── MEMBER ───────────────────────────────────────────
 
-// @route   POST /api/bookings
-// @access  Member only
 const createBookingRequest = async (req, res) => {
   const { facilityId, intendedActivity, date, startTime, endTime } = req.body;
 
@@ -16,7 +13,6 @@ const createBookingRequest = async (req, res) => {
       return res.status(404).json({ message: 'Facility not found or inactive' });
     }
 
-    // Check capacity — how many approved bookings exist for same facility/date/time
     const overlappingBookings = await Booking.countDocuments({
       facility: facilityId,
       date,
@@ -45,8 +41,6 @@ const createBookingRequest = async (req, res) => {
   }
 };
 
-// @route   GET /api/bookings/my
-// @access  Member only
 const getMyBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({
@@ -63,8 +57,6 @@ const getMyBookings = async (req, res) => {
   }
 };
 
-// @route   GET /api/bookings/history
-// @access  Member only
 const getMyBookingHistory = async (req, res) => {
   try {
     const history = await BookingHistory.find({ member: req.user._id })
@@ -78,8 +70,6 @@ const getMyBookingHistory = async (req, res) => {
   }
 };
 
-// @route   PUT /api/bookings/:id/cancel
-// @access  Member only
 const cancelBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -96,7 +86,7 @@ const cancelBooking = async (req, res) => {
     booking.status = 'cancelled';
     await booking.save();
 
-    // Add to booking history
+
     await BookingHistory.create({
       member: booking.member,
       booking: booking._id,
@@ -113,13 +103,8 @@ const cancelBooking = async (req, res) => {
   }
 };
 
-// ─── STAFF ────────────────────────────────────────────
-
-// @route   GET /api/bookings/requests
-// @access  Staff only
 const getBookingRequests = async (req, res) => {
   try {
-    // Staff can only see requests for their assigned facilities
     const staffFacilities = req.user.assignedFacilities;
 
     const bookings = await Booking.find({
@@ -136,8 +121,7 @@ const getBookingRequests = async (req, res) => {
   }
 };
 
-// @route   GET /api/bookings/requests/all
-// @access  Staff only — all statuses for their facilities
+
 const getAllBookingsForStaff = async (req, res) => {
   try {
     const staffFacilities = req.user.assignedFacilities;
@@ -156,8 +140,7 @@ const getAllBookingsForStaff = async (req, res) => {
   }
 };
 
-// @route   GET /api/bookings/:id
-// @access  Staff only
+
 const getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
@@ -173,8 +156,7 @@ const getBookingById = async (req, res) => {
   }
 };
 
-// @route   PUT /api/bookings/:id/approve
-// @access  Staff only
+
 const approveBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -187,7 +169,7 @@ const approveBooking = async (req, res) => {
     booking.handledBy = req.user._id;
     await booking.save();
 
-    // Send notification to member
+    
     await Notification.create({
       recipient: booking.member,
       message: `Your booking request has been approved.`,
@@ -201,8 +183,7 @@ const approveBooking = async (req, res) => {
   }
 };
 
-// @route   PUT /api/bookings/:id/reject
-// @access  Staff only
+
 const rejectBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -215,7 +196,7 @@ const rejectBooking = async (req, res) => {
     booking.handledBy = req.user._id;
     await booking.save();
 
-    // Add to history
+    
     await BookingHistory.create({
       member: booking.member,
       booking: booking._id,
@@ -226,7 +207,7 @@ const rejectBooking = async (req, res) => {
       outcome: 'rejected'
     });
 
-    // Send notification to member
+
     await Notification.create({
       recipient: booking.member,
       message: `Your booking request has been rejected.`,
@@ -240,8 +221,7 @@ const rejectBooking = async (req, res) => {
   }
 };
 
-// @route   PUT /api/bookings/:id/suggest-alternative
-// @access  Staff only
+
 const suggestAlternative = async (req, res) => {
   const { alternativeFacilityId } = req.body;
 
@@ -262,7 +242,7 @@ const suggestAlternative = async (req, res) => {
     booking.handledBy = req.user._id;
     await booking.save();
 
-    // Send notification to member
+
     await Notification.create({
       recipient: booking.member,
       message: `An alternative facility "${altFacility.name}" has been suggested for your booking.`,
@@ -276,8 +256,7 @@ const suggestAlternative = async (req, res) => {
   }
 };
 
-// @route   PUT /api/bookings/:id/complete
-// @access  Staff only
+
 const completeBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -290,7 +269,7 @@ const completeBooking = async (req, res) => {
     booking.handledBy = req.user._id;
     await booking.save();
 
-    // Auto update booking history
+
     await BookingHistory.create({
       member: booking.member,
       booking: booking._id,
@@ -301,7 +280,7 @@ const completeBooking = async (req, res) => {
       outcome: 'completed'
     });
 
-    // Send notification to member
+
     await Notification.create({
       recipient: booking.member,
       message: `Your session at the facility has been marked as completed.`,
@@ -315,16 +294,12 @@ const completeBooking = async (req, res) => {
   }
 };
 
-// ─── MEMBERSHIP CANCELLATION ──────────────────────────
 
-// @route   PUT /api/bookings/cancel-membership
-// @access  Member only
 const cancelMembership = async (req, res) => {
   try {
     req.user.membershipActive = false;
     await req.user.save();
 
-    // Cancel all pending/approved bookings
     await Booking.updateMany(
       { member: req.user._id, status: { $in: ['pending', 'approved'] } },
       { status: 'cancelled' }

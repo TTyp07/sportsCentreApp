@@ -2,10 +2,7 @@ const EquipmentReport = require('../models/EquipmentReport');
 const Notification = require('../models/Notification');
 const Facility = require('../models/Facility');
 
-// ─── MEMBER ───────────────────────────────────────────
 
-// @route   POST /api/equipment
-// @access  Member only
 const submitReport = async (req, res) => {
   const { facilityId, equipmentDescription, issueDescription } = req.body;
 
@@ -29,8 +26,6 @@ const submitReport = async (req, res) => {
   }
 };
 
-// @route   GET /api/equipment/my
-// @access  Member only
 const getMyReports = async (req, res) => {
   try {
     const reports = await EquipmentReport.find({ reportedBy: req.user._id })
@@ -44,8 +39,6 @@ const getMyReports = async (req, res) => {
   }
 };
 
-// @route   GET /api/equipment/:id
-// @access  Member (own) / Staff / Admin
 const getReportById = async (req, res) => {
   try {
     const report = await EquipmentReport.findById(req.params.id)
@@ -55,7 +48,7 @@ const getReportById = async (req, res) => {
 
     if (!report) return res.status(404).json({ message: 'Report not found' });
 
-    // Members can only view their own reports
+    
     if (
       req.user.role === 'member' &&
       report.reportedBy._id.toString() !== req.user._id.toString()
@@ -69,13 +62,10 @@ const getReportById = async (req, res) => {
   }
 };
 
-// ─── STAFF ────────────────────────────────────────────
 
-// @route   GET /api/equipment
-// @access  Staff only
 const getAllReports = async (req, res) => {
   try {
-    // Staff can only see reports for their assigned facilities
+    
     const staffFacilities = req.user.assignedFacilities;
 
     const reports = await EquipmentReport.find({
@@ -92,8 +82,7 @@ const getAllReports = async (req, res) => {
   }
 };
 
-// @route   GET /api/equipment/status/:status
-// @access  Staff only
+
 const getReportsByStatus = async (req, res) => {
   const { status } = req.params;
   const validStatuses = ['pending', 'noted', 'repair_in_progress', 'resolved'];
@@ -119,8 +108,7 @@ const getReportsByStatus = async (req, res) => {
   }
 };
 
-// @route   PUT /api/equipment/:id/status
-// @access  Staff only
+
 const updateReportStatus = async (req, res) => {
   const { status } = req.body;
   const validStatuses = ['noted', 'repair_in_progress', 'resolved'];
@@ -133,7 +121,7 @@ const updateReportStatus = async (req, res) => {
     const report = await EquipmentReport.findById(req.params.id);
     if (!report) return res.status(404).json({ message: 'Report not found' });
 
-    // Make sure staff is assigned to this facility
+    
     const isAssigned = req.user.assignedFacilities
       .map((id) => id.toString())
       .includes(report.facility.toString());
@@ -146,7 +134,7 @@ const updateReportStatus = async (req, res) => {
     report.updatedBy = req.user._id;
     await report.save();
 
-    // Notify the member who reported it
+    
     const statusMessages = {
       noted: 'Your equipment report has been noted by staff.',
       repair_in_progress: 'Repair is now in progress for the equipment you reported.',

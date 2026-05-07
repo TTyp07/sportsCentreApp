@@ -1,8 +1,6 @@
 const Facility = require('../models/Facility');
 const User = require('../models/User');
 
-// @route   GET /api/facilities
-// @access  Public
 const getFacilities = async (req, res) => {
   try {
     const facilities = await Facility.find({ isActive: true })
@@ -13,8 +11,6 @@ const getFacilities = async (req, res) => {
   }
 };
 
-// @route   GET /api/facilities/:id
-// @access  Public
 const getFacilityById = async (req, res) => {
   try {
     const facility = await Facility.findById(req.params.id)
@@ -26,8 +22,6 @@ const getFacilityById = async (req, res) => {
   }
 };
 
-// @route   POST /api/facilities
-// @access  Admin only
 const createFacility = async (req, res) => {
   const { name, type, description, usageGuidelines, location, capacityLimit, timeSlotDuration, availableSlots } = req.body;
 
@@ -48,8 +42,6 @@ const createFacility = async (req, res) => {
   }
 };
 
-// @route   PUT /api/facilities/:id
-// @access  Admin only
 const updateFacility = async (req, res) => {
   try {
     const facility = await Facility.findByIdAndUpdate(
@@ -64,8 +56,6 @@ const updateFacility = async (req, res) => {
   }
 };
 
-// @route   DELETE /api/facilities/:id
-// @access  Admin only
 const deleteFacility = async (req, res) => {
   try {
     const facility = await Facility.findByIdAndUpdate(
@@ -80,8 +70,6 @@ const deleteFacility = async (req, res) => {
   }
 };
 
-// @route   PUT /api/facilities/:id/assign-staff
-// @access  Admin only
 const assignStaff = async (req, res) => {
   const { staffId } = req.body;
 
@@ -97,13 +85,11 @@ const assignStaff = async (req, res) => {
       return res.status(400).json({ message: 'Staff member is not approved or is suspended' });
     }
 
-    // Avoid duplicates
     if (!facility.assignedStaff.includes(staffId)) {
       facility.assignedStaff.push(staffId);
       await facility.save();
     }
 
-    // Also update staff's assignedFacilities
     if (!staff.assignedFacilities.includes(req.params.id)) {
       staff.assignedFacilities.push(req.params.id);
       await staff.save();
@@ -115,8 +101,6 @@ const assignStaff = async (req, res) => {
   }
 };
 
-// @route   PUT /api/facilities/:id/remove-staff
-// @access  Admin only
 const removeStaff = async (req, res) => {
   const { staffId } = req.body;
 
@@ -143,8 +127,6 @@ const removeStaff = async (req, res) => {
   }
 };
 
-// @route   PUT /api/facilities/:id/capacity
-// @access  Admin only
 const setCapacityLimit = async (req, res) => {
   const { capacityLimit } = req.body;
 
@@ -161,8 +143,6 @@ const setCapacityLimit = async (req, res) => {
   }
 };
 
-// @route   PUT /api/facilities/:id/timeslot
-// @access  Admin only
 const setTimeSlotLimit = async (req, res) => {
   const { timeSlotDuration } = req.body;
 
@@ -179,8 +159,6 @@ const setTimeSlotLimit = async (req, res) => {
   }
 };
 
-// @route   GET /api/facilities/:id/availability
-// @access  Public
 const getFacilityAvailability = async (req, res) => {
   try {
     const facility = await Facility.findById(req.params.id).select('availableSlots timeSlotDuration capacityLimit');
